@@ -2,7 +2,7 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
-describe('total likes', () => {
+describe('favorite blog', () => {
   const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -65,14 +65,13 @@ describe('total likes', () => {
     }  
   ]
 
-  test('when list has only one blog, equals the likes of that', () => {
-    const result = listHelper.totalLikes(listWithOneBlog)
-    assert.strictEqual(result, 5)
+  test('returns the most liked blog of a list of blogs', () => {
+    const result = listHelper.favoriteBlog(multipleBlogs)
+    assert.deepStrictEqual(result, multipleBlogs[2])
     })
-  
-    test('when list has only one blog, equals the likes of that', () => {
-      const result = listHelper.totalLikes(multipleBlogs)
-      assert.strictEqual(result, 36)
+
+  test('returns the most liked blog of a list of blogs', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    assert.deepStrictEqual(result, listWithOneBlog[0])
     })
-  
 })
