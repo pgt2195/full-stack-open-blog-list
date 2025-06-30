@@ -25,6 +25,27 @@ test('unique identifier property is named "id"', async () => {
   assert(response.body.every(el => el.id))
 })
 
+test('a valid blog can be added ', async () => {
+  const newBlog = {
+    title: "Test Blog 3",
+    author: "Testperson",
+    url: "www.testblog3.com",
+    likes: 12
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(n => n.title)
+  assert(titles.includes(newBlog.title))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
