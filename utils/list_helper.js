@@ -1,6 +1,6 @@
 const lodash = require('lodash')
 
-const dummy = blogs => 1
+const dummy = _blogs => 1
 
 const totalLikes = blogs => blogs.reduce((sum, blog) => sum + blog.likes, 0)
 
