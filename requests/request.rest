@@ -13,3 +13,14 @@ content-type: application/json
     "url": "www.testblog.com",
     "likes": 0
 }
+
+###
+PUT http://localhost:3003/api/blogs/68629d1d49aa9203de2ed3da
+content-type: application/json
+
+{
+    "title": "Test Blog 2",
+    "author": "Testperson",
+    "url": "www.testblog.com",
+    "likes": 0
+}

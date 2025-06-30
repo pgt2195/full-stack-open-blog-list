@@ -82,11 +82,66 @@ test('deletion succeeds with status code 204 if id is valid', async () => {
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
   assert(!blogsAtEnd.some(blog => blog.id === blogToDelete.id))
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
+test('deletion fails with status 400 if id nor properly formated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const fakeId = 1234567
+
+  await api
+    .delete(`/api/blogs/${fakeId}`)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+})
+
+test('updating the likes count of an existing entry', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const { id, ...updatedBlog } = blogsAtStart[0]
+  updatedBlog.likes = 1000
+  
+  const response = await api
+    .put(`/api/blogs/${id}`)
+    .send(updatedBlog)
+    .expect(200)
+
+  assert.strictEqual(response.body.likes, 1000)
+})
+
+test('updating fails with status 404 if id doesn\'t exists', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const fakeId = await helper.nonExistingId()
+  const { id, ...updatedBlog } = blogsAtStart[0]
+
+  await api
+    .put(`/api/blogs/${fakeId}`)
+    .send(updatedBlog)
+    .expect(404)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.deepStrictEqual(blogsAtEnd[0], blogsAtStart[0])
+})
+
+test('updating fails if likes is not the good data type', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const { id, ...updatedBlog } = blogsAtStart[0]
+  updatedBlog.likes = 'one thousand'
+  
+  const response = await api
+    .put(`/api/blogs/${id}`)
+    .send(updatedBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.deepStrictEqual(blogsAtEnd[0], blogsAtStart[0])
 })
 
 after(async () => {
