@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helpers')
 const Blog = require('../models/blog')
+const lodash = require('lodash')
 
 const api = supertest(app)
 
@@ -42,8 +43,8 @@ test('a valid blog can be added ', async () => {
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-  const titles = blogsAtEnd.map(n => n.title)
-  assert(titles.includes(newBlog.title))
+  const withoutId = blogsAtEnd.map(({ id, ...otherFields }) => otherFields)
+  assert(withoutId.some(blog => lodash.isEqual(blog, newBlog)))
 })
 
 after(async () => {
