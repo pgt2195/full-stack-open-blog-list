@@ -26,13 +26,8 @@ test('unique identifier property is named "id"', async () => {
   assert(response.body.every(el => el.id))
 })
 
-test('a valid blog can be added ', async () => {
-  const newBlog = {
-    title: "Test Blog 3",
-    author: "Testperson",
-    url: "www.testblog3.com",
-    likes: 12
-  }
+test('a valid blog can be added', async () => {
+  const newBlog = helper.singleBlog
 
   await api
     .post('/api/blogs')
@@ -45,6 +40,18 @@ test('a valid blog can be added ', async () => {
 
   const withoutId = blogsAtEnd.map(({ id, ...otherFields }) => otherFields)
   assert(withoutId.some(blog => lodash.isEqual(blog, newBlog)))
+})
+
+test('a valid blog added without likes property is default to 0 like', async () => {
+  const { likes, ...newBlogWithoutLikes} = helper.singleBlog
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlogWithoutLikes)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.likes, 0)
 })
 
 after(async () => {
