@@ -54,8 +54,20 @@ test('a valid blog added without likes property is default to 0 like', async () 
   assert.strictEqual(response.body.likes, 0)
 })
 
-test('an invalid blog can\'t be added', async () => {
-  const { title, url, ...badBlog} = helper.singleBlog
+test('an invalid blog without title property can\'t be added', async () => {
+  const { title, ...badBlog} = helper.singleBlog
+
+  await api
+    .post('/api/blogs')
+    .send(badBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('an invalid blog without url property can\'t be added', async () => {
+  const { url, ...badBlog} = helper.singleBlog
 
   await api
     .post('/api/blogs')
