@@ -40,7 +40,6 @@ test('unique identifier property is named "id"', async () => {
   assert(response.body.every(el => el.id))
 })
 
-// TODO : réparer les tests
 test('a valid blog can be added', async () => {
   const newBlog = helper.singleBlog
   const user = await helper.getFirstUserId()
@@ -61,6 +60,23 @@ test('a valid blog can be added', async () => {
     return { ...otherFields, user: user.toString() } // Need to convert the user id to a string so the comparaison above passes
   })
   assert(withoutId.some(blog => lodash.isEqual(blog, newBlog)))
+})
+
+test('a valid blog without a token can\'t be added', async () => {
+  const newBlog = helper.singleBlog
+  // no user token
+
+  const response = await api
+    .post('/api/blogs')
+    // no user token
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+
+  assert(response.body.error.includes('token invalid'))
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
 test('a valid blog added without likes property is default to 0 like', async () => {
