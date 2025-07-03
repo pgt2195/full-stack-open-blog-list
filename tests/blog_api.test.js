@@ -5,6 +5,8 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helpers')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 const lodash = require('lodash')
 
 const api = supertest(app)
@@ -12,6 +14,15 @@ const api = supertest(app)
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+})
+
+beforeEach(async () => {
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+
+  await user.save()
 })
 
 test('all blogs are returned', async () => {
@@ -28,6 +39,8 @@ test('unique identifier property is named "id"', async () => {
 
 test('a valid blog can be added', async () => {
   const newBlog = helper.singleBlog
+  const user = await helper.getFirstUserId()
+  newBlog.user = user
 
   await api
     .post('/api/blogs')
@@ -38,12 +51,15 @@ test('a valid blog can be added', async () => {
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-  const withoutId = blogsAtEnd.map(({ id, ...otherFields }) => otherFields)
+  const withoutId = blogsAtEnd.map(({ id, user, ...otherFields }) => {
+    return { ...otherFields, user: user.toString() } // Need to convert the user id to a string so the comparaison above passes
+  })
   assert(withoutId.some(blog => lodash.isEqual(blog, newBlog)))
 })
 
 test('a valid blog added without likes property is default to 0 like', async () => {
   const { likes, ...newBlogWithoutLikes} = helper.singleBlog
+  newBlogWithoutLikes.user = await helper.getFirstUserId()
 
   const response = await api
     .post('/api/blogs')

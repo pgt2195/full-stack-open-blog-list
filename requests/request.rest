@@ -11,6 +11,7 @@ content-type: application/json
     "title": "Test Blog 2",
     "author": "Testboy",
     "url": "www.testblog.com",
+    "user": "686646dcee02f3417c3a1124",
     "likes": 0
 }
 
