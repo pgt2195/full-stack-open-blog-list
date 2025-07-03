@@ -37,6 +37,7 @@ test('unique identifier property is named "id"', async () => {
   assert(response.body.every(el => el.id))
 })
 
+// TODO : réparer les tests
 test('a valid blog can be added', async () => {
   const newBlog = helper.singleBlog
   const user = await helper.getFirstUserId()
