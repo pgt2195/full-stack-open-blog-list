@@ -47,11 +47,30 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  try {
-    await Blog.findByIdAndDelete(request.params.id)
-    response.status(204).end()
-  } catch (exception) {
-    next(exception)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+  if (!user) {
+    return response.status(400).json({ error: 'user missing or not valid' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(400).json({ error: 'blog missing or not valid' })
+  }
+
+  if (blog.user.toString() === decodedToken.id.toString()) {
+    try {
+      await Blog.findByIdAndDelete(request.params.id)
+      response.status(204).end()
+    } catch (exception) {
+      next(exception)
+    }
+  } else {
+    return response.status(401).json({ error: 'user id does not match the post creator\'s id.'})
   }
 })
 

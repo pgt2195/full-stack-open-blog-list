@@ -17,6 +17,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBvb
 }
 
 ###
+DELETE http://localhost:3003/api/blogs/686691f13a434b165c613ef6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBvbG9sbyIsImlkIjoiNjg2NjQ2ZGNlZTAyZjM0MTdjM2ExMTI0IiwiaWF0IjoxNzUxNTUyNDc0fQ.38mx4EcRbW_koPhAPhzAvilfFqZs5jE-HfqqSISK5C4
+###
+DELETE http://localhost:3003/api/blogs/68667df3551af234fa5b531a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RVc2VyIiwiaWQiOiI2ODY2YTJlZmFhY2MwYjFiNDc4M2MyOTIiLCJpYXQiOjE3NTE1NTY4OTh9.-iR-b340n1mYe1-TK_592zK3i2Q9zVkD_3wwshrUqpY
+
+
+###
 PUT http://localhost:3003/api/blogs/68629d1d49aa9203de2ed3da
 content-type: application/json
 
@@ -41,10 +49,20 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:3003/api/users/
+Content-Type: application/json
+
+{
+    "username": "TestUser",
+    "name": "Test User",
+    "password": "password"
+}
+
+###
 POST http://localhost:3003/api/login/
 Content-Type: application/json
 
 {
-    "username": "Pololo",
+    "username": "TestUser",
     "password": "password"
 }
