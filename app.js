@@ -30,6 +30,12 @@ app.get('/', (_req, res) => {
   res.send('Hello from Blog List!')
 })
 
+if (process.env.NODE_ENV === 'test') {
+  console.log('Server is running in test mode')
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
+
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
