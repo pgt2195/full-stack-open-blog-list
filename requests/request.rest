@@ -25,15 +25,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc
 
 
 ###
-PUT http://localhost:3003/api/blogs/68629d1d49aa9203de2ed3da
+PUT http://localhost:3003/api/blogs/68936e007fa21b5c2bf23ebc
 content-type: application/json
 
 {
-    "title": "Test Blog 2",
-    "author": "Testperson",
-    "url": "www.testblog.com",
-    "likes": 0
-}
+    "title": "Je fais un test d'ajout d'un nouveau blog",
+    "author": "Michel Pipi",
+    "url": "test.com",
+    "likes": 59,
+    "user": {
+      "username": "Pololo",
+      "name": "Paul GT",
+      "id": "68822d606bd452df57705514"
+    },
+    "comments": [
+      {
+        "content": "C'est un test nouveau de commentaire"
+      }
+    ],
+    "id": "68936e007fa21b5c2bf23ebc"
+  }
 
 ###
 GET http://localhost:3003/api/users/
